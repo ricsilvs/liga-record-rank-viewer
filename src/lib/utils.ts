@@ -53,8 +53,6 @@ export const fetchRankings = async (teams: string[], round: string) => {
     })
   );
 
-  console.log(results);
-
   const formattedTeams: Team[] = results
     // .flatMap((result) => result[0]?.Teams || [])  //'No Fear ', user: 'LBastos' might need to be changed
     .flatMap((result) => result[0]?.Teams[0] || [])

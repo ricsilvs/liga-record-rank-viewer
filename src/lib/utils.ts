@@ -7,9 +7,11 @@ export function cn(...inputs: ClassValue[]) {
 
 export type Team = {
   position: string;
+  totalPosition?: string;
   name: string;
   user: string;
   points: number;
+  totalPoints?: number;
 };
 
 export function parseHtmlToJson(htmlString: string): Team[] {
@@ -51,14 +53,18 @@ export const fetchRankings = async (teams: string[], round: string) => {
     })
   );
 
+  console.log(results);
+
   const formattedTeams: Team[] = results
     // .flatMap((result) => result[0]?.Teams || [])  //'No Fear ', user: 'LBastos' might need to be changed
     .flatMap((result) => result[0]?.Teams[0] || [])
     .map((team) => ({
       position: team.PositionRound,
+      totalPosition: team.Position,
       name: team.NameTeam || "Unknown",
       user: team.NameUser || "Unknown",
       points: Number(team.PointsRound),
+      totalPoints: team.PointsTotal,
     }))
     .sort((a, b) => a.position - b.position)
     .map((t, index) => ({ ...t, position: `${index + 1}` }));

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import axios from "axios";
-import { fetchRankings, parseHtmlToJson, Team } from "./lib/utils";
+import { cn, fetchRankings, parseHtmlToJson, Team } from "./lib/utils";
 import {
   Select,
   SelectContent,
@@ -95,7 +95,17 @@ function App() {
             </TableHeader>
             <TableBody>
               {viewRanking.map((team, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  className={cn({
+                    "bg-red-500 hover:bg-red-600":
+                      selectedRound !== "0" && index >= 23,
+                    "bg-red-300 hover:bg-red-400":
+                      selectedRound !== "0" && index >= 19 && index < 23,
+                    "bg-red-100 hover:bg-red-200":
+                      selectedRound !== "0" && index >= 14 && index < 19,
+                  })}
+                >
                   <TableCell className="text-center">{team.position}</TableCell>
                   <TableCell className="text-center">{team.name}</TableCell>
                   <TableCell className="text-center">{team.user}</TableCell>
@@ -104,6 +114,46 @@ function App() {
               ))}
             </TableBody>
           </Table>
+          {selectedRound !== "0" && (
+            <>
+              <div className="text-xl lg:text-4xl">Total Score Round</div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-center">Position</TableHead>
+                    <TableHead className="text-center">Team Name</TableHead>
+                    <TableHead className="text-center">User</TableHead>
+                    <TableHead className="text-center">Points</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {viewRanking
+                    .sort(
+                      (a, b) =>
+                        ((a?.totalPosition ?? 0) as number) -
+                        ((b?.totalPosition ?? 0) as number)
+                    )
+                    .map((t, index) => ({ ...t, position: `${index + 1}` }))
+                    .map((team, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="text-center">
+                          {team.position}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {team.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {team.user}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {team.totalPoints}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </>
+          )}
         </>
       )}
     </div>

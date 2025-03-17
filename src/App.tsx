@@ -82,7 +82,7 @@ function App() {
               <SelectValue placeholder="Theme" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 34 }, (_, i) => `${i}`).map((round) => (
+              {Array.from({ length: 35 }, (_, i) => `${i}`).map((round) => (
                 <SelectItem key={round} value={round}>
                   {round === "0" ? "Total" : "Round " + round}
                 </SelectItem>

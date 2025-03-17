@@ -54,8 +54,15 @@ export const fetchRankings = async (teams: string[], round: string) => {
   );
 
   const formattedTeams: Team[] = results
-    // .flatMap((result) => result[0]?.Teams || [])  //'No Fear ', user: 'LBastos' might need to be changed
-    .flatMap((result) => result[0]?.Teams[0] || [])
+    .flatMap((result) => {
+      if (!result[0]?.Teams) return [];
+      // Find the team with NameUser 'LBastos' or fallback to the first team
+      const team =
+        // eslint-disable-next-line
+        result[0].Teams.find((t: any) => t.NameUser === "LBastos") ||
+        result[0].Teams[0];
+      return team ? [team] : [];
+    })
     .map((team) => ({
       position: team.PositionRound,
       totalPosition: team.Position,

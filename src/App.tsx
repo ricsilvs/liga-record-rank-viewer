@@ -66,6 +66,11 @@ function App() {
     [selectedRound, ranking, roundRanking]
   );
 
+  const viewRankingRound = useMemo(
+    () => ([] as Team[]).concat(viewRanking),
+    [viewRanking]
+  );
+
   return (
     <div className="flex flex-col gap-4 items-center">
       {loading ? (
@@ -114,7 +119,7 @@ function App() {
               ))}
             </TableBody>
           </Table>
-          {selectedRound !== "0" && (
+          {selectedRound !== "0" && viewRanking && (
             <>
               <div className="text-xl lg:text-4xl">Total Score Round</div>
               <Table>
@@ -127,7 +132,7 @@ function App() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {viewRanking
+                  {viewRankingRound
                     .sort(
                       (a, b) =>
                         ((a?.totalPosition ?? 0) as number) -

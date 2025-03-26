@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
-import { cn, fetchRankings, parseHtmlToJson, Team } from "../lib/utils";
+import { useMemo, useState } from "react";
+import { cn } from "../lib/utils";
 import {
   Select,
   SelectContent,
@@ -16,64 +15,35 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Progress } from "@/components/ui/progress";
+import { useRankings } from "@/context/rankings";
 
 const Home: React.FC = () => {
-  const [teams, setTeams] = useState<string[]>([]);
-  const [ranking, setRanking] = useState<Team[]>([]);
-  const [roundRanking, setRoundRanking] = useState<Team[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { rankings, loading, progress } = useRankings();
   const [selectedRound, setSelectedRound] = useState("0");
 
   const handleChange = (value: string) => {
     setSelectedRound(value);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          "https://liga.record.pt/common/services/teamsleague_page.ashx?guid=7ed55a3e-4496-4608-bc61-d6b1c2e16890&page=1&pagesize=50&mode_ranking=&type_ranking="
-        );
-        const ranking = parseHtmlToJson(response.data);
-        setTeams(ranking.map((t) => t.name));
-        setRanking(ranking);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (teams && selectedRound !== "0") {
-      const fetchData = async () => {
-        setLoading(true);
-        setRoundRanking(await fetchRankings(teams, selectedRound));
-        setLoading(false);
-      };
-
-      fetchData();
-    }
-  }, [teams, selectedRound]);
-
   const viewRanking = useMemo(
-    () => (selectedRound === "0" ? ranking : roundRanking),
-    [selectedRound, ranking, roundRanking]
+    () => rankings[selectedRound] || [],
+    [selectedRound, rankings]
   );
 
   const viewRankingRound = useMemo(
-    () => ([] as Team[]).concat(viewRanking),
+    () => ([] as typeof viewRanking).concat(viewRanking),
     [viewRanking]
   );
 
   return (
     <div className="flex flex-col gap-4 items-center">
       {loading ? (
-        <>Loading</>
+        <div className="flex flex-col items-center gap-2 w-full max-w-sm">
+          <div>Loading rankings data...</div>
+          <Progress value={progress} className="w-full" />
+          <div className="text-sm text-muted-foreground">{progress}%</div>
+        </div>
       ) : (
         <>
           <Select value={selectedRound} onValueChange={handleChange}>
@@ -81,7 +51,7 @@ const Home: React.FC = () => {
               <SelectValue placeholder="Theme" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 35 }, (_, i) => `${i}`).map((round) => (
+              {Array.from({ length: 31 }, (_, i) => `${i}`).map((round) => (
                 <SelectItem key={round} value={round}>
                   {round === "0" ? "Total" : "Round " + round}
                 </SelectItem>

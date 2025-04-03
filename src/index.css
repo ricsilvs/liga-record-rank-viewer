@@ -24,11 +24,6 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -58,11 +53,6 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -96,11 +86,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -117,5 +102,70 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* charts */
+@layer base {
+  :root {
+    /* These are HSL (Hue Saturation Lightness) color values */
+    /* Format is: --chart-N: <hue> <saturation>% <lightness>% */
+    --chart-1: 0 85% 60%; /* Bright Red */
+    --chart-2: 120 70% 45%; /* Bright Green */
+    --chart-3: 240 85% 60%; /* Bright Blue */
+    --chart-4: 45 85% 60%; /* Bright Yellow */
+    --chart-5: 300 85% 60%; /* Bright Purple */
+    --chart-6: 180 85% 45%; /* Bright Cyan */
+    --chart-7: 330 85% 60%; /* Bright Pink */
+    --chart-8: 150 85% 45%; /* Bright Lime */
+    --chart-9: 30 85% 60%; /* Bright Orange */
+    --chart-10: 270 85% 60%; /* Bright Magenta */
+    --chart-11: 90 85% 45%; /* Bright Chartreuse */
+    --chart-12: 210 85% 60%; /* Bright Sky Blue */
+    --chart-13: 60 85% 60%; /* Bright Gold */
+    --chart-14: 285 85% 60%; /* Bright Violet */
+    --chart-15: 135 85% 45%; /* Bright Emerald */
+    --chart-16: 15 85% 60%; /* Bright Coral */
+    --chart-17: 255 85% 60%; /* Bright Indigo */
+    --chart-18: 75 85% 45%; /* Bright Spring Green */
+    --chart-19: 345 85% 60%; /* Bright Rose */
+    --chart-20: 165 85% 45%; /* Bright Turquoise */
+    --chart-21: 105 85% 60%; /* Bright Lime Green */
+    --chart-22: 225 85% 60%; /* Bright Royal Blue */
+    --chart-23: 315 85% 60%; /* Bright Fuchsia */
+    --chart-24: 195 85% 45%; /* Bright Ocean Blue */
+    --chart-25: 45 85% 45%; /* Deep Yellow */
+    --chart-26: 150 85% 60%; /* Bright Mint */
+    --chart-27: 270 85% 45%; /* Deep Purple */
+  }
+
+  .dark {
+    --chart-1: 0 85% 60%; /* Bright Red */
+    --chart-2: 120 70% 45%; /* Bright Green */
+    --chart-3: 240 85% 60%; /* Bright Blue */
+    --chart-4: 45 85% 60%; /* Bright Yellow */
+    --chart-5: 300 85% 60%; /* Bright Purple */
+    --chart-6: 180 85% 45%; /* Bright Cyan */
+    --chart-7: 330 85% 60%; /* Bright Pink */
+    --chart-8: 150 85% 45%; /* Bright Lime */
+    --chart-9: 30 85% 60%; /* Bright Orange */
+    --chart-10: 270 85% 60%; /* Bright Magenta */
+    --chart-11: 90 85% 45%; /* Bright Chartreuse */
+    --chart-12: 210 85% 60%; /* Bright Sky Blue */
+    --chart-13: 60 85% 60%; /* Bright Gold */
+    --chart-14: 285 85% 60%; /* Bright Violet */
+    --chart-15: 135 85% 45%; /* Bright Emerald */
+    --chart-16: 15 85% 60%; /* Bright Coral */
+    --chart-17: 255 85% 60%; /* Bright Indigo */
+    --chart-18: 75 85% 45%; /* Bright Spring Green */
+    --chart-19: 345 85% 60%; /* Bright Rose */
+    --chart-20: 165 85% 45%; /* Bright Turquoise */
+    --chart-21: 105 85% 60%; /* Bright Lime Green */
+    --chart-22: 225 85% 60%; /* Bright Royal Blue */
+    --chart-23: 315 85% 60%; /* Bright Fuchsia */
+    --chart-24: 195 85% 45%; /* Bright Ocean Blue */
+    --chart-25: 45 85% 45%; /* Deep Yellow */
+    --chart-26: 150 85% 60%; /* Bright Mint */
+    --chart-27: 270 85% 45%; /* Deep Purple */
   }
 }

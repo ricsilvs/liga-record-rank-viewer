@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import axios from "axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -39,27 +40,48 @@ export function parseHtmlToJson(htmlString: string): Team[] {
   return teams;
 }
 
+interface TeamResponse {
+  Teams: Array<{
+    NameUser: string;
+    NameTeam: string;
+    PositionRound: string;
+    Position: string;
+    PointsRound: string;
+    PointsTotal: number;
+  }>;
+}
+
 export const fetchRankings = async (teams: string[], round: string) => {
   const baseUrl =
     "https://liga.record.pt/common/services/teams_getranking_search.ashx";
 
-  const results = await Promise.all(
-    teams.map(async (team) => {
-      const url = `${baseUrl}?page=1&pagesize=10&round=${round}&type=total&team=${encodeURIComponent(
+  // Create all URLs at once
+  const urls = teams.map(
+    (team) =>
+      `${baseUrl}?page=1&pagesize=10&round=${round}&type=total&team=${encodeURIComponent(
         team
-      )}&sex=&region=&club=&getpagecount=1`;
-      const response = await fetch(url);
-      return response.json();
-    })
+      )}&sex=&region=&club=&getpagecount=1`
+  );
+
+  // Make all requests in parallel using axios
+  const results = await Promise.all(
+    urls.map((url) =>
+      axios
+        .get(url)
+        .then((response) => response.data)
+        .catch((error) => {
+          console.error("Failed to fetch team data:", error);
+          return null;
+        })
+    )
   );
 
   const formattedTeams: Team[] = results
+    .filter((result): result is [TeamResponse] => result !== null)
     .flatMap((result) => {
       if (!result[0]?.Teams) return [];
-      // Find the team with NameUser 'LBastos' or fallback to the first team
       const team =
-        // eslint-disable-next-line
-        result[0].Teams.find((t: any) => t.NameUser === "LBastos") ||
+        result[0].Teams.find((t) => t.NameUser === "LBastos") ||
         result[0].Teams[0];
       return team ? [team] : [];
     })
@@ -71,7 +93,7 @@ export const fetchRankings = async (teams: string[], round: string) => {
       points: Number(team.PointsRound),
       totalPoints: team.PointsTotal,
     }))
-    .sort((a, b) => a.position - b.position)
+    .sort((a, b) => Number(a.position) - Number(b.position))
     .map((t, index) => ({ ...t, position: `${index + 1}` }));
 
   return formattedTeams;

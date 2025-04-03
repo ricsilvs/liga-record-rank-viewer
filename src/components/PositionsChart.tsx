@@ -38,8 +38,6 @@ export function PositionsChart({
   );
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  console.log(visibleTeams);
-
   // Transform rankings data for the chart, sorting by totalPosition for each round
   const chartData = Object.entries(rankings)
     .map(([round, teams]): ChartDataPoint => {

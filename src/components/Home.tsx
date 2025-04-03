@@ -63,10 +63,19 @@ const Home: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-center">Position</TableHead>
-                <TableHead className="text-center">Team Name</TableHead>
-                <TableHead className="text-center">User</TableHead>
-                <TableHead className="text-center">Points</TableHead>
+                <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm w-12 md:w-auto">
+                  <span className="hidden md:inline">Position</span>
+                  <span className="inline md:hidden">Pos</span>
+                </TableHead>
+                <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm">
+                  Team Name
+                </TableHead>
+                <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm">
+                  User
+                </TableHead>
+                <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm">
+                  Points
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -82,10 +91,18 @@ const Home: React.FC = () => {
                       selectedRound !== "0" && index >= 14 && index < 19,
                   })}
                 >
-                  <TableCell className="text-center">{team.position}</TableCell>
-                  <TableCell className="text-center">{team.name}</TableCell>
-                  <TableCell className="text-center">{team.user}</TableCell>
-                  <TableCell className="text-center">{team.points}</TableCell>
+                  <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
+                    {team.position}
+                  </TableCell>
+                  <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
+                    {team.name}
+                  </TableCell>
+                  <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
+                    {team.user}
+                  </TableCell>
+                  <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
+                    {team.points}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -96,10 +113,19 @@ const Home: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-center">Position</TableHead>
-                    <TableHead className="text-center">Team Name</TableHead>
-                    <TableHead className="text-center">User</TableHead>
-                    <TableHead className="text-center">Points</TableHead>
+                    <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm w-12 md:w-auto">
+                      <span className="hidden md:inline">Position</span>
+                      <span className="inline md:hidden">Pos</span>
+                    </TableHead>
+                    <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm">
+                      Team Name
+                    </TableHead>
+                    <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm">
+                      User
+                    </TableHead>
+                    <TableHead className="text-center p-1 md:p-2 text-xs md:text-sm">
+                      Points
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -112,16 +138,16 @@ const Home: React.FC = () => {
                     .map((t, index) => ({ ...t, position: `${index + 1}` }))
                     .map((team, index) => (
                       <TableRow key={index}>
-                        <TableCell className="text-center">
+                        <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
                           {team.position}
                         </TableCell>
-                        <TableCell className="text-center">
+                        <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
                           {team.name}
                         </TableCell>
-                        <TableCell className="text-center">
+                        <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
                           {team.user}
                         </TableCell>
-                        <TableCell className="text-center">
+                        <TableCell className="text-center p-1 md:p-2 text-xs md:text-sm">
                           {team.totalPoints}
                         </TableCell>
                       </TableRow>

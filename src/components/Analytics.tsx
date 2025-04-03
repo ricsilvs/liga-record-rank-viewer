@@ -1,6 +1,7 @@
 import React from "react";
 import { PositionsChart } from "./PositionsChart";
 import { FirstPlacesChart } from "./FirstPlacesChart";
+import { PrizePoolChart } from "./PrizePoolChart";
 import { useRankings } from "@/context/rankings";
 import LoadingState from "./LoadingState";
 
@@ -24,6 +25,12 @@ const Analytics: React.FC = () => {
                 First Places Distribution
               </h2>
               <FirstPlacesChart rankings={rankings} trackedTeams={teams} />
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold mb-4">
+                Prize Payment Distribution
+              </h2>
+              <PrizePoolChart rankings={rankings} trackedTeams={teams} />
             </section>
           </div>
         </>

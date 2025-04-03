@@ -1,7 +1,6 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis, Legend } from "recharts";
-import { useRankings } from "../context/rankings";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -9,7 +8,10 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useState } from "react";
-import { Payload } from "recharts/types/component/DefaultLegendContent";
+// import { Payload } from "recharts/types/component/DefaultLegendContent";
+import { useMediaQuery } from "../hooks/useMediaQuery";
+import { MultiSelect } from "./ui/multi-select";
+import { Team } from "@/lib/utils";
 
 interface ChartDataPoint {
   round: string;
@@ -24,13 +26,17 @@ function sanitizeTeamName(name: string): string {
     .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
 }
 
-export function PositionsChart() {
-  const { rankings, loading, teams: trackedTeams } = useRankings();
-  const [hiddenTeams, setHiddenTeams] = useState<Set<string>>(new Set());
-
-  if (loading) {
-    return <div>Loading chart data...</div>;
-  }
+export function PositionsChart({
+  rankings,
+  trackedTeams,
+}: {
+  rankings: Record<string, Team[]>;
+  trackedTeams: string[];
+}) {
+  const [visibleTeams, setVisibleTeams] = useState<Set<string>>(
+    new Set(trackedTeams)
+  );
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   // Transform rankings data for the chart, sorting by totalPosition for each round
   const chartData = Object.entries(rankings)
@@ -69,64 +75,93 @@ export function PositionsChart() {
     return acc;
   }, {} as ChartConfig);
 
-  const handleLegendClick = (entry: Payload) => {
-    const dataKey = entry?.dataKey;
-    if (typeof dataKey === "string") {
-      setHiddenTeams((prev) => {
-        const newHidden = new Set(prev);
-        if (newHidden.has(dataKey)) {
-          newHidden.delete(dataKey);
-        } else {
-          newHidden.add(dataKey);
-        }
-        return newHidden;
-      });
-    }
-  };
+  // const handleLegendClick = (entry: Payload) => {
+  //   const dataKey = entry?.dataKey;
+  //   if (typeof dataKey === "string") {
+  //     setVisibleTeams((prev) => {
+  //       const newVisible = new Set(prev);
+  //       if (newVisible.has(dataKey)) {
+  //         newVisible.delete(dataKey);
+  //       } else {
+  //         newVisible.add(dataKey);
+  //       }
+  //       return newVisible;
+  //     });
+  //   }
+  // };
 
   return (
-    <div className="w-full h-[500px]">
-      <ChartContainer config={chartConfig} className="w-full h-full">
-        <LineChart
-          accessibilityLayer
-          data={chartData}
-          margin={{
-            top: 20,
-            right: 20,
-            bottom: 20,
-            left: 20,
-          }}
-        >
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="round"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-          />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            reversed
-            domain={[1, trackedTeams.length]}
-          />
-          <Legend onClick={handleLegendClick} />
-          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-          {trackedTeams.map((team) => (
-            <Line
-              key={team}
-              dataKey={team}
-              type="linear"
-              stroke={`hsl(var(--chart-${trackedTeams.indexOf(team) + 1}))`}
-              strokeWidth={2}
-              dot={false}
-              hide={hiddenTeams.has(team)}
-              // connectNulls
+    <>
+      <MultiSelect
+        options={trackedTeams.map((team) => ({
+          label: team,
+          value: team,
+        }))}
+        onValueChange={(value) => {
+          setVisibleTeams(new Set(value));
+        }}
+        value={Array.from(visibleTeams)}
+        placeholder="Select teams"
+        // variant="inverted"
+        // animation={2}
+        // maxCount={3}
+      />
+      <div className={`w-full ${isMobile ? "h-[400px]" : "h-[500px]"}`}>
+        <ChartContainer config={chartConfig} className="w-full h-full">
+          <LineChart
+            accessibilityLayer
+            data={chartData}
+            margin={
+              isMobile
+                ? {
+                    top: 10,
+                    right: 5,
+                    bottom: 20,
+                    left: -20,
+                  }
+                : {
+                    top: 20,
+                    right: 20,
+                    bottom: 20,
+                    left: 0,
+                  }
+            }
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="round"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              interval={isMobile ? 2 : 0}
+              tick={{ fontSize: isMobile ? 10 : 12 }}
             />
-          ))}
-        </LineChart>
-      </ChartContainer>
-    </div>
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={isMobile ? 4 : 8}
+              reversed
+              domain={[1, trackedTeams.length]}
+              tick={{ fontSize: isMobile ? 10 : 12 }}
+              width={isMobile ? 20 : 30}
+            />
+            {/* {!isMobile && <Legend onClick={handleLegendClick} />} */}
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            {trackedTeams.map((team) => (
+              <Line
+                key={team}
+                dataKey={team}
+                type="linear"
+                stroke={`hsl(var(--chart-${trackedTeams.indexOf(team) + 1}))`}
+                strokeWidth={isMobile ? 1 : 2}
+                dot={false}
+                hide={!visibleTeams.has(team)}
+                // connectNulls
+              />
+            ))}
+          </LineChart>
+        </ChartContainer>
+      </div>
+    </>
   );
 }

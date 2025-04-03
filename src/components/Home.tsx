@@ -15,8 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Progress } from "@/components/ui/progress";
 import { useRankings } from "@/context/rankings";
+import LoadingState from "./LoadingState";
 
 const Home: React.FC = () => {
   const { rankings, loading, progress } = useRankings();
@@ -39,11 +39,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 items-center">
       {loading ? (
-        <div className="flex flex-col items-center gap-2 w-full max-w-sm">
-          <div>Loading rankings data...</div>
-          <Progress value={progress} className="w-full" />
-          <div className="text-sm text-muted-foreground">{progress}%</div>
-        </div>
+        <LoadingState progress={progress} />
       ) : (
         <>
           <Select value={selectedRound} onValueChange={handleChange}>

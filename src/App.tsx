@@ -14,9 +14,9 @@ function App() {
   return (
     <RankingsProvider>
       <Router>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background p-4 sm:p-6">
           <nav className="border-b">
-            <div className="flex h-8 items-center px-4">
+            <div className="flex h-8 items-center px-4 sm:px-6">
               <div className="flex space-x-4">
                 <NavLink
                   to="/"

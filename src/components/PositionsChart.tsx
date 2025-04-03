@@ -105,6 +105,7 @@ export function PositionsChart({
         // variant="inverted"
         // animation={2}
         // maxCount={3}
+        className="max-w-[800px]"
       />
       <div className={`w-full ${isMobile ? "h-[400px]" : "h-[500px]"}`}>
         <ChartContainer config={chartConfig} className="w-full h-full">

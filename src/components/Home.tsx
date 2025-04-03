@@ -48,7 +48,13 @@ const Home: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               {Array.from({ length: 31 }, (_, i) => `${i}`).map((round) => (
-                <SelectItem key={round} value={round}>
+                <SelectItem
+                  key={round}
+                  value={round}
+                  disabled={rankings[round].every((team) =>
+                    isNaN(Number(team.totalPoints))
+                  )}
+                >
                   {round === "0" ? "Total" : "Round " + round}
                 </SelectItem>
               ))}

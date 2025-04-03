@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Team, fetchRankings, parseHtmlToJson } from "../lib/utils";
 import { RankingsContext } from "./rankings";
 
-const BATCH_SIZE = 10; // Number of rounds to fetch at once
+const BATCH_SIZE = 15; // Increased batch size for rounds
 
 export const RankingsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -13,6 +13,7 @@ export const RankingsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const completedRequestsRef = useRef(0);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -20,6 +21,7 @@ export const RankingsProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(true);
         setError(null);
         setProgress(0);
+        completedRequestsRef.current = 0;
 
         // Fetch initial data to get teams
         const response = await axios.get(
@@ -29,28 +31,41 @@ export const RankingsProvider: React.FC<{ children: React.ReactNode }> = ({
         const teamNames = initialRanking.map((t) => t.name);
         setTeams(teamNames);
         setRankings({ "0": initialRanking });
-        setProgress(1);
+        setProgress(5); // Initial data fetch is 5% of total progress
 
         // Fetch rankings for all rounds in batches
         const rounds = Array.from({ length: 30 }, (_, i) => i + 1);
+        const allRankings: Record<string, Team[]> = { "0": initialRanking };
+
+        // Calculate total number of requests
+        const totalRequests = rounds.length;
 
         for (let i = 0; i < rounds.length; i += BATCH_SIZE) {
           const batch = rounds.slice(i, i + BATCH_SIZE);
 
-          // Process each batch in parallel with a small delay between requests
-          const batchPromises = batch.map(async (round, index) => {
-            // Add a small delay between requests in the same batch
-            if (index > 0) {
-              await new Promise((resolve) => setTimeout(resolve, 100));
-            }
+          // Process each batch in parallel
+          const batchPromises = batch.map(async (round) => {
             try {
               const roundRanking = await fetchRankings(
                 teamNames,
                 round.toString()
               );
+              // Update progress after each round completes (5% to 95%)
+              completedRequestsRef.current += 1;
+              const progressValue =
+                Math.floor(
+                  (completedRequestsRef.current / totalRequests) * 90
+                ) + 5;
+              setProgress(Math.min(95, progressValue));
               return { round: round.toString(), ranking: roundRanking };
             } catch (err) {
               console.error(`Failed to fetch round ${round}:`, err);
+              completedRequestsRef.current += 1;
+              const progressValue =
+                Math.floor(
+                  (completedRequestsRef.current / totalRequests) * 90
+                ) + 5;
+              setProgress(Math.min(95, progressValue));
               return null;
             }
           });
@@ -61,23 +76,14 @@ export const RankingsProvider: React.FC<{ children: React.ReactNode }> = ({
               result !== null
           );
 
-          setRankings((prev) => {
-            const newRankings = { ...prev };
-            validResults.forEach(({ round, ranking }) => {
-              newRankings[round] = ranking;
-            });
-            return newRankings;
+          validResults.forEach(({ round, ranking }) => {
+            allRankings[round] = ranking;
           });
 
-          setProgress(
-            Math.min(Math.floor(((i + BATCH_SIZE) / rounds.length) * 100), 50)
-          );
-
-          // Reduced delay between batches
-          if (i + BATCH_SIZE < rounds.length) {
-            await new Promise((resolve) => setTimeout(resolve, 50));
-          }
+          setRankings(allRankings);
         }
+
+        setProgress(100); // Final progress update
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to fetch rankings"

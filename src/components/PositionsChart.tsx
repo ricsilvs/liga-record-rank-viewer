@@ -91,7 +91,7 @@ export function PositionsChart({
   // };
 
   return (
-    <>
+    <div className="flex flex-col gap-4 items-center">
       <MultiSelect
         options={trackedTeams.map((team) => ({
           label: team,
@@ -164,6 +164,6 @@ export function PositionsChart({
           </LineChart>
         </ChartContainer>
       </div>
-    </>
+    </div>
   );
 }

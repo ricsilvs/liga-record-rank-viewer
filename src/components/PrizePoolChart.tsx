@@ -106,38 +106,41 @@ export function PrizePoolChart({
             nameKey="team"
             cx="50%"
             cy="50%"
-            innerRadius={isMobile ? "30%" : "40%"}
-            outerRadius={isMobile ? "60%" : "70%"}
+            innerRadius={isMobile ? "50%" : "40%"}
+            outerRadius={isMobile ? "100%" : "70%"}
             paddingAngle={2}
-            label={({
-              cx,
-              cy,
-              midAngle,
-              innerRadius,
-              outerRadius,
-              value,
-              name,
-              percent,
-            }) => {
-              const radius = innerRadius + (outerRadius - innerRadius) * 1.2;
-              const x = cx + radius * Math.cos(-midAngle * RADIAN);
-              const y = cy + radius * Math.sin(-midAngle * RADIAN);
+            label={
+              !isMobile
+                ? ({
+                    cx,
+                    cy,
+                    midAngle,
+                    innerRadius,
+                    outerRadius,
+                    value,
+                    name,
+                    percent,
+                  }) => {
+                    const radius =
+                      innerRadius + (outerRadius - innerRadius) * 1.2;
+                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-              return (
-                <text
-                  x={x}
-                  y={y}
-                  fill="#666"
-                  textAnchor={x > cx ? "start" : "end"}
-                  dominantBaseline="central"
-                  style={{ fontSize: isMobile ? 10 : 12 }}
-                >
-                  {`${name} (${value}€${
-                    !isMobile ? ` ${(percent * 100).toFixed(0)}%)` : ")"
-                  }`}
-                </text>
-              );
-            }}
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        fill="#666"
+                        textAnchor={x > cx ? "start" : "end"}
+                        dominantBaseline="central"
+                        style={{ fontSize: 12 }}
+                      >
+                        {`${name} (${value}€ ${(percent * 100).toFixed(0)}%)`}
+                      </text>
+                    );
+                  }
+                : undefined
+            }
           >
             {sortedData.map((entry) => (
               <Cell key={entry.team} fill={entry.fill} />
